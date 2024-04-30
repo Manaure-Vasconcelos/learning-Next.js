@@ -6,9 +6,9 @@ interface Params {
   params: { id: string };
 }
 
-export function GET(request: Request, { params }: Params) {
+export async function GET(request: Request, { params }: Params) {
   try {
-    const singleNote = prisma.note.findFirst({ where: { id: +params.id } });
+    const singleNote = await prisma.note.findFirst({ where: { id: +params.id } });
 
     if (!singleNote)
       return NextResponse.json({ error: "Note not found" }, { status: 404 });
