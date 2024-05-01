@@ -9,9 +9,9 @@ interface Note {
   title: string;
   content?: string;
 }
-
+/* Cria o contexto e anexa as funções adjuntas. */
 export const NoteContext = createContext<{
-  notes: any[];
+  notes: Note[];
   loadNotes: () => Promise<void>;
   createNote: (note: Note) => Promise<void>;
 }>({
@@ -19,7 +19,7 @@ export const NoteContext = createContext<{
   loadNotes: async () => {},
   createNote: async (note: Note) => {},
 });
-
+/* Devolve o context ja instanciado */
 export const useNotes = () => {
   const context = useContext(NoteContext);
   if (!context) {
@@ -27,7 +27,10 @@ export const useNotes = () => {
   }
   return context;
 };
-
+/*
+- Funciona como uma class e seus métodos
+- Exporta funções para usar em home
+*/
 export const NotesProvider = ({ children }: Children) => {
   const [notes, setNotes] = useState<any>([]);
 
@@ -38,6 +41,9 @@ export const NotesProvider = ({ children }: Children) => {
   }
 
   async function createNote(note: Note) {
+    if (!note.title.trim() || !note.content?.trim()) 
+      throw new Error("O título e o conteúdo da nota não podem estar vazios.");
+
     const res = await fetch("/api/notes", {
       method: "POST",
       body: JSON.stringify(note),
