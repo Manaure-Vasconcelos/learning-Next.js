@@ -1,20 +1,22 @@
+"use client";
 import NoteForm from "@/components/NoteForm";
+import { useEffect } from "react";
+import { useNotes } from "@/context/NoteContext";
 
-async function loadNotes() {
-  const res = await fetch("http://localhost:3000/api/notes");
-  const data = await res.json();
-  return data;
-}
+function HomePage() {
+  /* const { notes, loadNotes } = useContext(NoteContext); */
+  const { notes, loadNotes } = useNotes();
 
-async function HomePage() {
-  const notes = await loadNotes();
+  useEffect(() => {
+    loadNotes();
+  }, []);
 
   return (
     <div className="flex items-center justify-center h-screen">
       <div>
         <NoteForm />
 
-        {notes.map((note) => (
+        {notes.map((note: any) => (
           <div key={note.id} className="bg-slate-400 p-4 my-2">
             <h1>{note.title}</h1>
             <p>{note.content}</p>
